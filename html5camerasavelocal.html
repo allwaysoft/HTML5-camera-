@@ -9,6 +9,7 @@
 
     <video id="video" width="640" height="480" autoplay></video>
     <button id="snap">Snap Photo</button>
+    <button id="save">Save Photo</button>
     <canvas id="canvas" width="640" height="480"></canvas>
 
     <script type="text/javascript">
@@ -55,6 +56,27 @@
             context.drawImage(video, 0, 0, 640, 480);
         });
 
+        function saveAsLocalImage() {
+            var myCanvas = document.getElementById("canvas");
+            // here is the most important part because if you dont replace you will get a DOM 18 exception.  
+            // var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream;Content-Disposition: attachment;filename=foobar.png");  
+            var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            // window.location.href = image; // it will save locally  
+            // create temporary link  
+            var tmpLink = document.createElement('a');
+            tmpLink.download = 'image.png'; // set the name of the download file 
+            tmpLink.href = image;
+
+            // temporarily add link to body and initiate the download  
+            document.body.appendChild(tmpLink);
+            tmpLink.click();
+            document.body.removeChild(tmpLink);
+        }
+
+        // Trigger photo save
+        document.getElementById("save").addEventListener("click", function () {
+            saveAsLocalImage();
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <style>
+            .container {
+                margin: 0 auto;
+                position: relative;
+            }
+            .video {
+                width: 287;
+                height: 217;
+                position: fixed;
+                top: 100;
+                left: 100;
+            }
+
+            .canvas {
+                width: 287;
+                height: 217;
+                position: fixed;
+                top: 100;
+                left: 100;
+                z-index: 10;
+            }
+
+        </style>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="generator" content="PSPad editor, www.pspad.com">
+        <title></title>
+    </head>
+    <body>
+        <button id="snap">Snap Photo</button>
+        <button id="clear">Clear Photo</button>
+        <div class="container">
+            <video class="video" id="video" width="287" height="217" autoplay></video>    
+            <canvas class="canvas" id="canvas" width="287" height="217"></canvas>
+        </div>
+        <script type="text/javascript">
+
+            // Grab elements, create settings, etc.
+            var video = document.getElementById('video');
+
+            // Get access to the camera!
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // Not adding `{ audio: true }` since we only want video now
+                navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
+                    //video.src = window.URL.createObjectURL(stream);
+                    video.srcObject = stream;
+                    video.play();
+                });
+            }
+
+            /* Legacy code below: getUserMedia 
+             else if(navigator.getUserMedia) { // Standard
+             navigator.getUserMedia({ video: true }, function(stream) {
+             video.src = stream;
+             video.play();
+             }, errBack);
+             } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+             navigator.webkitGetUserMedia({ video: true }, function(stream){
+             video.src = window.webkitURL.createObjectURL(stream);
+             video.play();
+             }, errBack);
+             } else if(navigator.mozGetUserMedia) { // Mozilla-prefixed
+             navigator.mozGetUserMedia({ video: true }, function(stream){
+             video.srcObject = stream;
+             video.play();
+             }, errBack);
+             }
+             */
+
+            // Elements for taking the snapshot
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            //context.globalAlpha = 0.5;
+            context.fillStyle = 'rgba(255, 255, 255, 0)';
+            var imageObj = new Image();
+
+            imageObj.onload = function () {
+                context.drawImage(imageObj, 0, 0);
+            };
+            imageObj.src = 'portrait.b5809123.png';
+
+            var video = document.getElementById('video');
+
+            // Trigger photo take
+            document.getElementById("snap").addEventListener("click", function () {
+                context.drawImage(video, 0, 0, 287, 217);
+            });
+            // Trigger photo clear
+            document.getElementById("clear").addEventListener("click", function () {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(imageObj, 0, 0);
+            });
+
+        </script>
+    </body>
+</html>
